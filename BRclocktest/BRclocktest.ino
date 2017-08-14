@@ -1,37 +1,38 @@
 
 //Output pins
-const TM_OFF = 2;
-const TR_OFF = 3;
-const BR_OFF = 4;
-const BM_OFF = 5;
-const TM_ON = 6;
-const TR_ON = 7;
-const BR_ON = 8;
-const BM_ON = 2
-const BL_ON = 3;
-const TL_ON = 4;
-const M_ON = 5;
-const BL_OFF = 6;
-const TL_OFF = 7;
-const M_OFF = 8;
+const int TM_OFF = 2;
+const int TR_OFF = 3;
+const int BR_OFF = 4;
+const int BM_OFF = 5;
+const int TM_ON = 6;
+const int TR_ON = 7;
+const int BR_ON = 8;
 
-const D0 = 2;
-const D1 = 3; 
-const D2 = 4;
-const D3 = 5;
-const D4 = 6;
-const D5 = 7;
+const int BM_ON = 2;
+const int BL_ON = 3;
+const int TL_ON = 4;
+const int M_ON = 5;
+const int BL_OFF = 6;
+const int TL_OFF = 7;
+const int M_OFF = 8;
 
-const L0 = 9
-const L1 = 10
-const L2 = 11
+const int D0 = 2;
+const int D1 = 3; 
+const int D2 = 4;
+const int D3 = 5;
+const int D4 = 6;
+const int D5 = 7;
+
+const int L0 = 9;
+const int L1 = 10;
+const int L2 = 11;
 
 int hours =0 ;
 int mins = 0 ;
 int seconds =0;
 
 
-void setPins(int firstBlock[],int secondBlock[], int size1, int size2)
+void setPins(int* firstBlock,  int size1, int* secondBlock, int size2)
 {
   digitalWrite(L0,HIGH);
   for (int i = 0; i<size1; i++)
@@ -69,52 +70,82 @@ void  tick(){
   
 }
 
-void setDigit(digit,val){
+void setDigit(int digit, int val){
   // possibly some diff code here to save work. 
-  
-  digitalWrite(digit,HIGH);
 
-  switch(val)
-  {
-    case: 0 
-      setPins([0,0,0,0,1,1,1],7,[0,1,1,1,0,0,0],7);
-      break;
-    case: 1
-      setPins([1,0,0,1,0,1,1],7,[0,0,0,0,1,1,1],7);
-      break;
-    case: 2
-          setPins([0,0,1,0,1,1,0],7,[1,0,1,1,1,0,0],7);
-          break;
-    case: 3
-          setPins([0,0,0,0,1,1,1],7,[1,0,0,1,1,1,0],7);
-          break;
-    case: 4
-          setPins([1,0,0,1,0,1,1],7,[0,0,1,1,1,0,0],7);
-          break;
-    case: 5
-          setPins([0,1,0,0,1,0,1],7,[1,0,1,1,1,0,0],7);
-          break;
-    case: 6
-          setPins([0,1,0,0,1,0,1],7,[1,1,1,1,0,0,0],7);
-          break;
-    case: 7
-          setPins([0,0,0,1,1,1,1],7,[0,0,0,0,1,1,1],7);
-          break;
-    case: 8
-          setPins([0,0,0,0,1,1,1],7,[1,1,1,1,0,0,0],7);
-          break;
-    case: 9
-          setPins([0,0,0,1,1,1,1],7,[0,0,1,1,1,0,0],7);
-          break;
-     default:
-      break;
+  Serial.print(digit);
+  Serial.print(" ");
+  Serial.print(val);
+  Serial.print("\n");
+  digitalWrite(L2,HIGH);       
+  digitalWrite(digit,HIGH); 
+  digitalWrite(L2,LOW);       
+      
 
+     if (val==0){
+      int p1[] = {0,0,0,0,1,1,1};
+      int p2[] = {1,1,1,0,0,0,1};
+      setPins(p1,7,p2,7);
+     }
+     else if (val==1) {
+      int p1[] = {1,0,0,1,0,1,1};
+      int p2[] = {0,0,0,0,1,1,1};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==2) {
+      int p1[] = {0,0,1,0,1,1,0};
+      int p2[] = {1,0,1,1,1,0,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==3) {
+      int p1[] = {0,0,0,0,1,1,1};
+      int p2[] = {1,0,0,1,1,1,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==4) {
+      int p1[] = {1,0,0,1,0,1,1};
+      int p2[] = {0,0,1,1,1,0,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==5) {
+      int p1[] = {0,1,0,0,1,0,1};
+      int p2[] = {1,0,1,1,1,0,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==6) {
+      int p1[] = {0,1,0,0,1,0,1};
+      int p2[] = {1,1,1,1,0,0,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==7) {
+      int p1[] = {0,0,0,1,1,1,1};
+      int p2[] = {0,0,0,0,1,1,1};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==8) {
+      int p1[] = {0,0,0,0,1,1,1};
+      int p2[] = {1,1,1,1,0,0,0};
+      setPins(p1,7,p2,7);
+      
+     }
+     else if (val==9) {
+      int p1[] = {0,0,0,1,1,1,1};
+      int p2[] = {0,0,1,1,1,0,0};
+      setPins(p1,7,p2,7);
+      
+     }
+ 
       delay(100);
-      digitalWrite(digit,LOW);
-   
-  }
-  
-}
+      digitalWrite(L2,HIGH);       
+      digitalWrite(digit,LOW); 
+      digitalWrite(L2,LOW);}
 
 void setSeconds()
 {
@@ -122,29 +153,56 @@ void setSeconds()
   int tens = seconds / 10;
 
   setDigit(D4,tens);
-  setDigit(D3,units);
+  setDigit(D5,units);
   
 }
 
 void setMins()
 {
+  int units = mins % 10;
+  int tens = mins / 10;
+
+  if(seconds==0)
+  { setDigit(D2,tens);
+    setDigit(D3,units);
+  }
+  
   
 }
 
 
 void setHours()
 {
+  int units = hours % 10;
+  int tens = hours / 10;
+
+  if(mins==0 && seconds==0)
+  {setDigit(D0,tens);
+  setDigit(D1,units);
+  }
   
 }
 
 
 void setup() {
     // turn everything off first.
-    for(int i=2; i<11; i++)
+
+    for (int i=L0; i<L2+1; i++)
+          {digitalWrite(i, HIGH);}
+
+    
+    for(int i=2; i<L0; i++)
     {
       pinMode(i, OUTPUT);
       digitalWrite(i, LOW);
     }
+
+    for (int i=L0; i<L2+1; i++)
+          {digitalWrite(i, LOW);}
+
+    //
+
+    Serial.begin(9600);      // open the serial port at 9600 bps:    
 }
 
 
@@ -153,6 +211,11 @@ void setup() {
 void loop() { 
 
   tick();
+  Serial.print(seconds);
+  Serial.print(mins);
+  Serial.print(hours);
+  Serial.print("\n\n");
+
   setSeconds();
   setMins();
   setHours();
@@ -206,4 +269,48 @@ digitalWrite(L0,HIGH);
 
 */
 
+
+
+
+
+
+
+
+
+
+/* switch(val)
+  {
+    case 0:
+     // int p1[] = {0,0,0,0,1,1,1};
+   //   int p2[] = {0,0,0,0,1,1,1};
+   //   setPins(p1,7,p2,7);
+      break;
+    case 1:
+      setPins([1,0,0,1,0,1,1],7,[0,0,0,0,1,1,1],7);
+      break;
+    case 2:
+          setPins([0,0,1,0,1,1,0],7,[1,0,1,1,1,0,0],7);
+          break;
+    case 3:
+          setPins([0,0,0,0,1,1,1],7,[1,0,0,1,1,1,0],7);
+          break;
+    case 4:
+          setPins([1,0,0,1,0,1,1],7,[0,0,1,1,1,0,0],7);
+          break;
+    case 5:
+          setPins([0,1,0,0,1,0,1],7,[1,0,1,1,1,0,0],7);
+          break;
+    case 6:
+          setPins([0,1,0,0,1,0,1],7,[1,1,1,1,0,0,0],7);
+          break;
+    case 7:
+          setPins([0,0,0,1,1,1,1],7,[0,0,0,0,1,1,1],7);
+          break;
+    case 8:
+          setPins([0,0,0,0,1,1,1],7,[1,1,1,1,0,0,0],7);
+          break;
+    case 9:
+          setPins([0,0,0,1,1,1,1],7,[0,0,1,1,1,0,0],7);
+          break;
+       */
 
