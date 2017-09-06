@@ -16,11 +16,11 @@ const int BL_OFF = 6;
 const int TL_OFF = 7;
 const int M_OFF = 8;
 
-const int D0 = 2;
-const int D1 = 3; 
-const int D2 = 4;
-const int D3 = 5;
-const int D4 = 6;
+const int D0 = 6;
+const int D1 = 4; 
+const int D2 = 2;
+const int D3 = 3;
+const int D4 = 5;
 const int D5 = 7;
 
 const int L0 = 9;
@@ -32,23 +32,6 @@ int mins = 0 ;
 int seconds =0;
 
 
-void setPins(int* firstBlock,  int size1, int* secondBlock, int size2)
-{
-  digitalWrite(L0,HIGH);
-  for (int i = 0; i<size1; i++)
-  {
-    digitalWrite(i+2,firstBlock[i]);
-  }
-  digitalWrite(L0,LOW);
-
-  digitalWrite(L1,HIGH);
-  for (int i = 0; i<size2; i++)
-  {
-    digitalWrite(i+2,secondBlock[i]);
-  }
-  digitalWrite(L1,LOW);
-
-}
 
 
 void  tick(){
@@ -70,6 +53,41 @@ void  tick(){
   
 }
 
+void setPins(int* firstBlock,  int size1, int* secondBlock, int size2)
+{
+  digitalWrite(L0,HIGH);
+  for (int i = 0; i<size1; i++)
+  {
+    digitalWrite(i+2,firstBlock[i]);
+    //Serial.print("blk1:");
+    //Serial.print(i+2);
+    //Serial.print(" ");
+    //Serial.print(firstBlock[i]);
+  }
+  digitalWrite(L0,LOW);
+
+  digitalWrite(L1,HIGH);
+  for (int i = 0; i<size2; i++)
+  {
+    //Serial.print(" blk2:");
+    //Serial.print(i+2);
+    //Serial.print(" ");
+    //Serial.print(secondBlock[i]);
+    
+    digitalWrite(i+2,secondBlock[i]);
+  }
+  digitalWrite(L1,LOW);
+
+  //switch all residual pins off
+  for (int i = 0; i<size2; i++)
+  {
+   digitalWrite(i+2,LOW);
+  }
+
+
+}
+
+
 void setDigit(int digit, int val){
   // possibly some diff code here to save work. 
 
@@ -77,11 +95,8 @@ void setDigit(int digit, int val){
   Serial.print(" ");
   Serial.print(val);
   Serial.print("\n");
-  digitalWrite(L2,HIGH);       
-  digitalWrite(digit,HIGH); 
-  digitalWrite(L2,LOW);       
-      
-
+   
+     
      if (val==0){
       int p1[] = {0,0,0,0,1,1,1};
       int p2[] = {1,1,1,0,0,0,1};
@@ -95,7 +110,7 @@ void setDigit(int digit, int val){
 
      else if (val==2) {
       int p1[] = {0,0,1,0,1,1,0};
-      int p2[] = {1,0,1,1,1,0,0};
+      int p2[] = {1,1,0,1,0,1,0};
       setPins(p1,7,p2,7);
      }
 
@@ -141,19 +156,27 @@ void setDigit(int digit, int val){
       setPins(p1,7,p2,7);
       
      }
- 
-      delay(100);
-      digitalWrite(L2,HIGH);       
-      digitalWrite(digit,LOW); 
-      digitalWrite(L2,LOW);}
+
+     digitalWrite(L2, HIGH);
+     digitalWrite(digit,HIGH);
+     delay(160);
+     digitalWrite(digit,LOW);
+     digitalWrite(L2, LOW);
+
+
+  }
 
 void setSeconds()
 {
   int units = seconds % 10;
   int tens = seconds / 10;
 
-  setDigit(D4,tens);
+  if(units == 0)
+  {setDigit(D4,tens);}
+  
   setDigit(D5,units);
+  
+  
   
 }
 
@@ -185,24 +208,30 @@ void setHours()
 
 
 void setup() {
-    // turn everything off first.
+  
+    for(int j=2; j<12; j++)
+      {pinMode(j, OUTPUT);}
 
-    for (int i=L0; i<L2+1; i++)
-          {digitalWrite(i, HIGH);}
+
+    for (int i=9; i<12; i++)
+          {digitalWrite(i, HIGH);
+            for(int j=2; j<9; j++)
+            {
+              digitalWrite(j, LOW);
+            }
+            digitalWrite(i, LOW);
+          }
+
+           setDigit(D0,0);
+            setDigit(D1,0);
+             setDigit(D2,0);
+              setDigit(D3,0);
+               setDigit(D4,0);
+                setDigit(D5,0);
+    
+    Serial.begin(9600);      // open the serial port at 9600 bps:    
 
     
-    for(int i=2; i<L0; i++)
-    {
-      pinMode(i, OUTPUT);
-      digitalWrite(i, LOW);
-    }
-
-    for (int i=L0; i<L2+1; i++)
-          {digitalWrite(i, LOW);}
-
-    //
-
-    Serial.begin(9600);      // open the serial port at 9600 bps:    
 }
 
 
@@ -220,7 +249,7 @@ void loop() {
   setMins();
   setHours();
 
-  delay(900);
+  delay(680);
 
 }
 
