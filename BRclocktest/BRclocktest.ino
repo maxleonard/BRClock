@@ -103,26 +103,26 @@ void setDigit(int digit, int val){
       setPins(p1,7,p2,7);
      }
      else if (val==1) {
-      int p1[] = {1,0,0,1,0,1,1};
-      int p2[] = {0,0,0,0,1,1,1};
+      int p1[] = {1,0,0,1,0,0,0};
+      int p2[] = {0,0,0,0,1,1,0};
       setPins(p1,7,p2,7);
      }
 
      else if (val==2) {
       int p1[] = {0,0,1,0,1,1,0};
-      int p2[] = {1,1,0,1,0,1,0};
+      int p2[] = {1,1,0,1,0,0,0};
       setPins(p1,7,p2,7);
      }
 
      else if (val==3) {
-      int p1[] = {0,0,0,0,1,1,1};
-      int p2[] = {1,0,0,1,1,1,0};
+      int p1[] = {0,0,0,0,0,0,1};
+      int p2[] = {0,0,0,0,1,1,0};
       setPins(p1,7,p2,7);
      }
 
      else if (val==4) {
-      int p1[] = {1,0,0,1,0,1,1};
-      int p2[] = {0,0,1,1,1,0,0};
+      int p1[] = {1,0,0,1,0,1,0};
+      int p2[] = {0,0,1,1,0,0,0};
       setPins(p1,7,p2,7);
      }
 
@@ -133,8 +133,8 @@ void setDigit(int digit, int val){
      }
 
      else if (val==6) {
-      int p1[] = {0,1,0,0,1,0,1};
-      int p2[] = {1,1,1,1,0,0,0};
+      int p1[] = {0,0,0,0,0,0,0};
+      int p2[] = {0,1,0,0,0,0,0};
       setPins(p1,7,p2,7);
      }
 
@@ -145,21 +145,25 @@ void setDigit(int digit, int val){
      }
 
      else if (val==8) {
-      int p1[] = {0,0,0,0,1,1,1};
+      int p1[] = {0,0,0,0,0,0,0};
       int p2[] = {1,1,1,1,0,0,0};
       setPins(p1,7,p2,7);
       
      }
      else if (val==9) {
       int p1[] = {0,0,0,1,1,1,1};
-      int p2[] = {0,0,1,1,1,0,0};
+      int p2[] = {0,0,0,0,1,0,0};
       setPins(p1,7,p2,7);
       
      }
 
+     int d=220;
+     if(digit==D4 || digit == D5)
+      d=130;
+    
      digitalWrite(L2, HIGH);
      digitalWrite(digit,HIGH);
-     delay(160);
+     delay(d);
      digitalWrite(digit,LOW);
      digitalWrite(L2, LOW);
 
@@ -342,4 +346,73 @@ digitalWrite(L0,HIGH);
           setPins([0,0,0,1,1,1,1],7,[0,0,1,1,1,0,0],7);
           break;
        */
+
+
+
+
+       /*
+        * 
+        * 
+        *  Non diffing sets
+        * 
+        * 
+        * if (val==0){
+      int p1[] = {0,0,0,0,1,1,1};
+      int p2[] = {1,1,1,0,0,0,1};
+      setPins(p1,7,p2,7);
+     }
+     else if (val==1) {
+      int p1[] = {1,0,0,1,0,1,1};
+      int p2[] = {0,0,0,0,1,1,1};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==2) {
+      int p1[] = {0,0,1,0,1,1,0};
+      int p2[] = {1,1,0,1,0,1,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==3) {
+      int p1[] = {0,0,0,0,1,1,1};
+      int p2[] = {1,0,0,1,1,1,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==4) {
+      int p1[] = {1,0,0,1,0,1,1};
+      int p2[] = {0,0,1,1,1,0,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==5) {
+      int p1[] = {0,1,0,0,1,0,1};
+      int p2[] = {1,0,1,1,1,0,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==6) {
+      int p1[] = {0,1,0,0,1,0,1};
+      int p2[] = {1,1,1,1,0,0,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==7) {
+      int p1[] = {0,0,0,1,1,1,1};
+      int p2[] = {0,0,0,0,1,1,1};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==8) {
+      int p1[] = {0,0,0,0,1,1,1};
+      int p2[] = {1,1,1,1,0,0,0};
+      setPins(p1,7,p2,7);
+      
+     }
+     else if (val==9) {
+      int p1[] = {0,0,0,1,1,1,1};
+      int p2[] = {0,0,1,1,1,0,0};
+      setPins(p1,7,p2,7);
+      
+     }*/
 
