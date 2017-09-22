@@ -246,14 +246,14 @@ void loop() {
   //1024 == full  == 2
   // 0 = quickest == 50
 
-  float decimator = (((float)speedpot /1024.0) * 400.0);
+  float decimator = (((float)speedpot /1024.0) * 500.0);
 
   //speed
   //tick++
   //mental / not
 
 
-  if(analogRead(1) > 400) 
+  if(analogRead(1) > 1000) 
     { ffbutton = true;}
   
   if(ffbutton == true && ffprev == false)
@@ -264,8 +264,22 @@ void loop() {
     ffprev = ffbutton;
 
 
+  delay(1);
+  ticks=ticks-(int)decimator;
+  Serial.print(decimator);
+    Serial.print(" ");
+          Serial.print(ticks);
+
+
+Serial.print("\n");
+
   if(ticks<=0)
     {   tick();
+
+    Serial.print("\n TICK:");
+
+      Serial.print(ticks);
+          Serial.print("\n:");
 
       setSeconds();
       setMins();
@@ -273,8 +287,7 @@ void loop() {
       ticks=10000;
     }
 
-  delay(1);
-  ticks=ticks-decimator;
+
 
    for (int i=9; i<12; i++)
           {digitalWrite(i, HIGH);
