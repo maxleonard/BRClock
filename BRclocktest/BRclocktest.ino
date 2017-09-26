@@ -45,7 +45,7 @@ boolean mminusprev = false;
 
 void  tick(){
 
-  seconds++;
+ // seconds++;
   if(seconds>59)
     {
       seconds=0;
@@ -322,12 +322,15 @@ void loop() {
    if((mminus<800)&&(mminusprev=true))
    {mminusprev=false;}
 
- // tick(); Only needed for manual opperation. 
-   
+    
    
    seconds = now.second();
   if(secondsPrev!=seconds)
   {
+    now = RTC.now(); 
+
+    mins = now.minute();
+    hours = now.hour();
     setSeconds();
     setMins();
     setHours();
