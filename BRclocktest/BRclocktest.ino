@@ -1,3 +1,7 @@
+#include <Wire.h>
+#include "RTClib.h"
+
+RTC_DS1307 RTC;
 
 //Output pins
 const int TM_OFF = 2;
@@ -31,7 +35,12 @@ int hours =0 ;
 int mins = 0 ;
 int seconds =0;
 
+int secondsPrev =0;
 
+boolean hplusprev = false;
+boolean hminusprev = false;
+boolean mplusprev = false;
+boolean mminusprev = false;
 
 
 void  tick(){
@@ -235,6 +244,17 @@ void setup() {
     
     Serial.begin(9600);      // open the serial port at 9600 bps:    
 
+
+    Wire.begin();
+    RTC.begin();
+  // Check to see if the RTC is keeping time.  If it isnt, load the time from your computer.
+  if (! RTC.isrunning()) {
+    Serial.println("RTC is NOT running!");
+    // This will reflect the time that your sketch was compiled
+    RTC.adjust(DateTime(__DATE__, __TIME__));
+  }
+
+  
     
 }
 
@@ -242,177 +262,88 @@ void setup() {
 
 
 void loop() { 
+    
+  DateTime now = RTC.now(); 
 
-  tick();
-  Serial.print(seconds);
-  Serial.print(mins);
-  Serial.print(hours);
-  Serial.print("\n\n");
+  int hplus = analogRead(0);
+  int hminus = analogRead(1);
+  int mplus = analogRead(2);
+  int mminus = analogRead(3);
 
-  setSeconds();
-  setMins();
-  setHours();
-
-  delay(680);
-
-}
-
-/*
-
- digitalWrite(L0,HIGH);
-      digitalWrite(TM_OFF,LOW);
-      digitalWrite(TR_OFF,LOW);
-      digitalWrite(BR_OFF,LOW);
-      digitalWrite(BM_OFF,LOW);
-      digitalWrite(TM_ON,LOW);
-      digitalWrite(TR_ON,LOW);
-      digitalWrite(BR_ON,LOW);
-      digitalWrite(L0,LOW);
-
-      digitalWrite(L1,HIGH);
-      digitalWrite(BM_ON,LOW);
-      digitalWrite(BL_ON,LOW);
-      digitalWrite(TL_ON,LOW);
-      digitalWrite(M_ON,LOW);
-      digitalWrite(BL_OFF,LOW);
-      digitalWrite(TL_OFF,LOW);
-      digitalWrite(M_OFF,LOW);
-      digitalWrite(L1,LOW);*/
-
-/*
-digitalWrite(L0,HIGH);
-      digitalWrite(TM_OFF,LOW);
-      digitalWrite(TR_OFF,LOW);
-      digitalWrite(BR_OFF,LOW);
-      digitalWrite(BM_OFF,LOW);
-      digitalWrite(TM_ON,HIGH);
-      digitalWrite(TR_ON,HIGH);
-      digitalWrite(BR_ON,HIGH);
-      digitalWrite(L0,LOW);
-
-      digitalWrite(L1,HIGH);
-      digitalWrite(BM_ON,LOW);
-      digitalWrite(BL_ON,HIGH);
-      digitalWrite(TL_ON,HIGH);
-      digitalWrite(M_ON,HIGH);
-      digitalWrite(BL_OFF,LOW);
-      digitalWrite(TL_OFF,LOW);
-      digitalWrite(M_OFF,LOW);
-      digitalWrite(L1,LOW);
-
-*/
-
-
-
-
-
-
-
-
-
-
-/* switch(val)
+  boolean change = false;
+  if((hplus>800)&&(hplusprev==false))
   {
-    case 0:
-     // int p1[] = {0,0,0,0,1,1,1};
-   //   int p2[] = {0,0,0,0,1,1,1};
-   //   setPins(p1,7,p2,7);
-      break;
-    case 1:
-      setPins([1,0,0,1,0,1,1],7,[0,0,0,0,1,1,1],7);
-      break;
-    case 2:
-          setPins([0,0,1,0,1,1,0],7,[1,0,1,1,1,0,0],7);
-          break;
-    case 3:
-          setPins([0,0,0,0,1,1,1],7,[1,0,0,1,1,1,0],7);
-          break;
-    case 4:
-          setPins([1,0,0,1,0,1,1],7,[0,0,1,1,1,0,0],7);
-          break;
-    case 5:
-          setPins([0,1,0,0,1,0,1],7,[1,0,1,1,1,0,0],7);
-          break;
-    case 6:
-          setPins([0,1,0,0,1,0,1],7,[1,1,1,1,0,0,0],7);
-          break;
-    case 7:
-          setPins([0,0,0,1,1,1,1],7,[0,0,0,0,1,1,1],7);
-          break;
-    case 8:
-          setPins([0,0,0,0,1,1,1],7,[1,1,1,1,0,0,0],7);
-          break;
-    case 9:
-          setPins([0,0,0,1,1,1,1],7,[0,0,1,1,1,0,0],7);
-          break;
-       */
+    hours++;
+    hplusprev =true;
+    setHours();
+    change = true;
+  }
 
+  if((hminus>800)&&(hminusprev==false))
+  {
+    hours--;
+    hminusprev=true;
+    setHours();
+    change = true;
 
+  }
 
+  if((mplus>800)&&(mplusprev==false))
+  {
+    mins++;
+    mplusprev =true;
+    setMins();
+    change = true;
+  }
 
-       /*
-        * 
-        * 
-        *  Non diffing sets
-        * 
-        * 
-        * if (val==0){
-      int p1[] = {0,0,0,0,1,1,1};
-      int p2[] = {1,1,1,0,0,0,1};
-      setPins(p1,7,p2,7);
-     }
-     else if (val==1) {
-      int p1[] = {1,0,0,1,0,1,1};
-      int p2[] = {0,0,0,0,1,1,1};
-      setPins(p1,7,p2,7);
-     }
+  if((mminus>800)&&(mminusprev==false))
+  {
+    mins--;
+    mminusprev=true;
+    setMins();
+    change = true;
+  }
+  
+  if(change)
+  { DateTime newTime = DateTime(2008,12,3,hours,mins,seconds);
+    RTC.adjust(newTime);
+  }
+  
 
-     else if (val==2) {
-      int p1[] = {0,0,1,0,1,1,0};
-      int p2[] = {1,1,0,1,0,1,0};
-      setPins(p1,7,p2,7);
-     }
+  if((hplus<800)&&(hplusprev=true))
+   {hplusprev=false;}
+   
+   if((hminus<800)&&(hminusprev=true))
+   {hminusprev=false;}
+   
+   if((mplus<800)&&(mplusprev=true))
+   {mplusprev=false;}
+   
+   if((mminus<800)&&(mminusprev=true))
+   {mminusprev=false;}
 
-     else if (val==3) {
-      int p1[] = {0,0,0,0,1,1,1};
-      int p2[] = {1,0,0,1,1,1,0};
-      setPins(p1,7,p2,7);
-     }
+ // tick(); Only needed for manual opperation. 
+   
+   
+   seconds = now.second();
+  if(secondsPrev!=seconds)
+  {
+    setSeconds();
+    setMins();
+    setHours();
+    
+    secondsPrev = seconds;
+  }
 
-     else if (val==4) {
-      int p1[] = {1,0,0,1,0,1,1};
-      int p2[] = {0,0,1,1,1,0,0};
-      setPins(p1,7,p2,7);
-     }
+  delay(100);
 
-     else if (val==5) {
-      int p1[] = {0,1,0,0,1,0,1};
-      int p2[] = {1,0,1,1,1,0,0};
-      setPins(p1,7,p2,7);
-     }
-
-     else if (val==6) {
-      int p1[] = {0,1,0,0,1,0,1};
-      int p2[] = {1,1,1,1,0,0,0};
-      setPins(p1,7,p2,7);
-     }
-
-     else if (val==7) {
-      int p1[] = {0,0,0,1,1,1,1};
-      int p2[] = {0,0,0,0,1,1,1};
-      setPins(p1,7,p2,7);
-     }
-
-     else if (val==8) {
-      int p1[] = {0,0,0,0,1,1,1};
-      int p2[] = {1,1,1,1,0,0,0};
-      setPins(p1,7,p2,7);
-      
-     }
-     else if (val==9) {
-      int p1[] = {0,0,0,1,1,1,1};
-      int p2[] = {0,0,1,1,1,0,0};
-      setPins(p1,7,p2,7);
-      
-     }*/
+   for (int i=9; i<12; i++)
+          {digitalWrite(i, HIGH);
+            for(int j=2; j<9; j++)
+            {
+              digitalWrite(j, LOW);
+            }
+            digitalWrite(i, LOW);
+          }
+}
 
