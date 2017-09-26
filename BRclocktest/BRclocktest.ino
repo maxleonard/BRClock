@@ -336,6 +336,12 @@ void loop() {
     setHours();
     
     secondsPrev = seconds;
+    Serial.print(hours);
+    Serial.print(" ");
+    Serial.print(mins);
+    Serial.print(" ");
+    Serial.print(seconds);
+    Serial.print("\n");
   }
 
   delay(100);
