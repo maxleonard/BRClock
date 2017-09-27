@@ -68,44 +68,30 @@ void setPins(int* firstBlock,  int size1, int* secondBlock, int size2)
   for (int i = 0; i<size1; i++)
   {
     digitalWrite(i+2,firstBlock[i]);
-    //Serial.print("blk1:");
-    //Serial.print(i+2);
-    //Serial.print(" ");
-    //Serial.print(firstBlock[i]);
   }
   digitalWrite(L0,LOW);
+
 
   digitalWrite(L1,HIGH);
   for (int i = 0; i<size2; i++)
   {
-    //Serial.print(" blk2:");
-    //Serial.print(i+2);
-    //Serial.print(" ");
-    //Serial.print(secondBlock[i]);
-    
-    digitalWrite(i+2,secondBlock[i]);
+   
+   digitalWrite(i+2,secondBlock[i]);
   }
   digitalWrite(L1,LOW);
 
+  
   //switch all residual pins off
   for (int i = 0; i<size2; i++)
   {
    digitalWrite(i+2,LOW);
   }
 
-
 }
 
 
 void setDigit(int digit, int val){
-  // possibly some diff code here to save work. 
-
-  Serial.print(digit);
-  Serial.print(" ");
-  Serial.print(val);
-  Serial.print("\n");
-   
-     
+ 
      if (val==0){
       int p1[] = {0,0,0,0,1,1,1};
       int p2[] = {1,1,1,0,0,0,1};
@@ -166,6 +152,7 @@ void setDigit(int digit, int val){
       
      }
 
+      // 220ms to shift big digits, only 130ms for small seconds
      int d=220;
      if(digit==D4 || digit == D5)
       d=130;
@@ -189,8 +176,6 @@ void setSeconds()
   
   setDigit(D5,units);
   
-  
-  
 }
 
 void setMins()
@@ -202,7 +187,6 @@ void setMins()
   { setDigit(D2,tens);
     setDigit(D3,units);
   }
-  
   
 }
 
@@ -244,18 +228,14 @@ void setup() {
     
     Serial.begin(9600);      // open the serial port at 9600 bps:    
 
-
     Wire.begin();
     RTC.begin();
-  // Check to see if the RTC is keeping time.  If it isnt, load the time from your computer.
+  // Check to see if the RTC is keeping time.  If it isnt, load the time from computer.
   if (! RTC.isrunning()) {
-    Serial.println("RTC is NOT running!");
-    // This will reflect the time that your sketch was compiled
+    Serial.println("RTC is NOT running! Setting to compile time");
     RTC.adjust(DateTime(__DATE__, __TIME__));
   }
-
-  
-    
+   
 }
 
 
@@ -285,7 +265,6 @@ void loop() {
     hminusprev=true;
     setHours();
     change = true;
-
   }
 
   if((mplus>800)&&(mplusprev==false))
@@ -322,7 +301,6 @@ void loop() {
    if((mminus<800)&&(mminusprev=true))
    {mminusprev=false;}
 
-    
    
    seconds = now.second();
   if(secondsPrev!=seconds)
@@ -336,24 +314,22 @@ void loop() {
     setHours();
     
     secondsPrev = seconds;
-    Serial.print(hours);
-    Serial.print(" ");
-    Serial.print(mins);
-    Serial.print(" ");
-    Serial.print(seconds);
-    Serial.print("\n");
+
   }
 
-   for (int i=9; i<12; i++)
-          {digitalWrite(i, HIGH);
-            for(int j=2; j<9; j++)
-            {
-              digitalWrite(j, LOW);
-            }
-            digitalWrite(i, LOW);
-          }
 
-    delay(100);
+    //Make sure all transistors are off when we dont need them.     
+    for (int i=9; i<12; i++)
+      {digitalWrite(i, HIGH);
+        for(int j=2; j<9; j++)
+        {
+          digitalWrite(j, LOW);
+        }
+        digitalWrite(i, LOW);
+    }
+
+    delay(100); // check RTC every 100ms, probably responeive enough
+
 
 }
 
