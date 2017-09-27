@@ -344,8 +344,6 @@ void loop() {
     Serial.print("\n");
   }
 
-  delay(100);
-
    for (int i=9; i<12; i++)
           {digitalWrite(i, HIGH);
             for(int j=2; j<9; j++)
@@ -354,5 +352,8 @@ void loop() {
             }
             digitalWrite(i, LOW);
           }
+
+    delay(100);
+
 }
 
