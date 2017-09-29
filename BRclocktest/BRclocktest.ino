@@ -90,8 +90,17 @@ void setPins(int* firstBlock,  int size1, int* secondBlock, int size2)
 }
 
 
-void setDigit(int digit, int val){
- 
+void setDigit(int digit, int val, boolean diff=true){
+
+
+  Serial.print("set digit: ");
+    Serial.print(digit);
+  Serial.print(" ");
+
+  Serial.print(diff);
+  Serial.print("\n");
+ if(diff)
+ {
      if (val==0){
       int p1[] = {0,0,0,0,1,1,1};
       int p2[] = {1,1,1,0,0,0,1};
@@ -151,9 +160,73 @@ void setDigit(int digit, int val){
       setPins(p1,7,p2,7);
       
      }
+ }
 
+ else if (diff==false)
+ {
+    if (val==0){
+      int p1[] = {0,0,0,0,1,1,1};
+      int p2[] = {1,1,1,0,0,0,1};
+      setPins(p1,7,p2,7);
+     }
+     else if (val==1) {
+      int p1[] = {1,0,0,1,0,1,1};
+      int p2[] = {0,0,0,0,1,1,1};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==2) {
+      int p1[] = {0,0,1,0,1,1,0};
+      int p2[] = {1,1,0,1,0,1,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==3) {
+      int p1[] = {0,0,0,0,1,1,1};
+      int p2[] = {1,0,0,1,1,1,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==4) {
+      int p1[] = {1,0,0,1,0,1,1};
+      int p2[] = {0,0,1,1,1,0,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==5) {
+      int p1[] = {0,1,0,0,1,0,1};
+      int p2[] = {1,0,1,1,1,0,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==6) {
+      int p1[] = {0,1,0,0,1,0,1};
+      int p2[] = {1,1,1,1,0,0,0};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==7) {
+      int p1[] = {0,0,0,1,1,1,1};
+      int p2[] = {0,0,0,0,1,1,1};
+      setPins(p1,7,p2,7);
+     }
+
+     else if (val==8) {
+      int p1[] = {0,0,0,0,1,1,1};
+      int p2[] = {1,1,1,1,0,0,0};
+      setPins(p1,7,p2,7);
+      
+     }
+     else if (val==9) {
+      int p1[] = {0,0,0,1,1,1,1};
+      int p2[] = {0,0,1,1,1,0,0};
+      setPins(p1,7,p2,7);
+      
+     }
+  
+ }
       // 220ms to shift big digits, only 130ms for small seconds
-     int d=220;
+     int d=260;
      if(digit==D4 || digit == D5)
       d=130;
     
@@ -166,39 +239,38 @@ void setDigit(int digit, int val){
 
   }
 
-void setSeconds()
+void setSeconds(boolean diff = false)
 {
   int units = seconds % 10;
   int tens = seconds / 10;
 
   if(units == 0)
-  {setDigit(D4,tens);}
+  {setDigit(D4,tens,diff);}
   
-  setDigit(D5,units);
+  setDigit(D5,units,diff);
   
 }
 
-void setMins()
+void setMins(boolean diff = false)
 {
   int units = mins % 10;
   int tens = mins / 10;
 
-  if(seconds==0)
-  { setDigit(D2,tens);
-    setDigit(D3,units);
+  if((seconds==0)||(diff==true))
+  { setDigit(D2,tens,diff);
+    setDigit(D3,units,diff);
   }
   
 }
 
 
-void setHours()
+void setHours(boolean diff = false)
 {
   int units = hours % 10;
   int tens = hours / 10;
-
-  if(mins==0 && seconds==0)
-  {setDigit(D0,tens);
-  setDigit(D1,units);
+  if((mins==0 && seconds==0) || diff==true)
+  {setDigit(D0,tens,diff);
+  setDigit(D1,units,diff);
   }
   
 }
@@ -219,12 +291,6 @@ void setup() {
             digitalWrite(i, LOW);
           }
 
-           setDigit(D0,0);
-            setDigit(D1,0);
-             setDigit(D2,0);
-              setDigit(D3,0);
-               setDigit(D4,0);
-                setDigit(D5,0);
     
     Serial.begin(9600);      // open the serial port at 9600 bps:    
 
@@ -235,6 +301,16 @@ void setup() {
     Serial.println("RTC is NOT running! Setting to compile time");
     RTC.adjust(DateTime(__DATE__, __TIME__));
   }
+
+  DateTime now = RTC.now(); 
+
+  seconds = 0;
+  mins =0;
+  hours = now.hour();
+  setHours(true);
+  mins = now.minute();
+  setMins(true);
+  seconds = now.second();
    
 }
 
@@ -244,6 +320,7 @@ void setup() {
 void loop() { 
     
   DateTime now = RTC.now(); 
+ 
 
   int hplus = analogRead(0);
   int hminus = analogRead(1);
@@ -255,7 +332,7 @@ void loop() {
   {
     hours++;
     hplusprev =true;
-    setHours();
+    setHours(true);
     change = true;
   }
 
@@ -263,7 +340,7 @@ void loop() {
   {
     hours--;
     hminusprev=true;
-    setHours();
+    setHours(true);
     change = true;
   }
 
@@ -271,7 +348,7 @@ void loop() {
   {
     mins++;
     mplusprev =true;
-    setMins();
+    setMins(true);
     change = true;
   }
 
@@ -279,7 +356,7 @@ void loop() {
   {
     mins--;
     mminusprev=true;
-    setMins();
+    setMins(true);
     change = true;
   }
   
@@ -289,20 +366,21 @@ void loop() {
   }
   
 
-  if((hplus<800)&&(hplusprev=true))
+  if((hplus<800)&&(hplusprev==true))
    {hplusprev=false;}
    
-   if((hminus<800)&&(hminusprev=true))
+   if((hminus<800)&&(hminusprev==true))
    {hminusprev=false;}
    
-   if((mplus<800)&&(mplusprev=true))
+   if((mplus<800)&&(mplusprev==true))
    {mplusprev=false;}
    
-   if((mminus<800)&&(mminusprev=true))
+   if((mminus<800)&&(mminusprev==true))
    {mminusprev=false;}
 
    
    seconds = now.second();
+
   if(secondsPrev!=seconds)
   {
     now = RTC.now(); 
@@ -312,7 +390,7 @@ void loop() {
     setSeconds();
     setMins();
     setHours();
-    
+
     secondsPrev = seconds;
 
   }
@@ -332,4 +410,5 @@ void loop() {
 
 
 }
+
 
