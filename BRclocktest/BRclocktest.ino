@@ -96,10 +96,11 @@ void setDigit(int digit, int val, boolean diff=true){
   Serial.print("set digit: ");
     Serial.print(digit);
   Serial.print(" ");
-
+  Serial.print(val);
+  Serial.print(" ");
   Serial.print(diff);
   Serial.print("\n");
- if(diff)
+ if(diff==true)
  {
      if (val==0){
       int p1[] = {0,0,0,0,1,1,1};
@@ -253,11 +254,20 @@ void setSeconds(boolean diff = false)
 
 void setMins(boolean diff = false)
 {
+
+  if(mins>59)
+    mins=0;
+  
   int units = mins % 10;
   int tens = mins / 10;
 
-  if((seconds==0)||(diff==true))
-  { setDigit(D2,tens,diff);
+  if((seconds==0)||(diff==false))
+  { 
+      Serial.print("SET MINS");
+  Serial.print(diff);
+    Serial.print("\n");
+
+    setDigit(D2,tens,diff);
     setDigit(D3,units,diff);
   }
   
@@ -268,7 +278,8 @@ void setHours(boolean diff = false)
 {
   int units = hours % 10;
   int tens = hours / 10;
-  if((mins==0 && seconds==0) || diff==true)
+  
+  if((mins==0 && seconds==0) || diff==false)
   {setDigit(D0,tens,diff);
   setDigit(D1,units,diff);
   }
@@ -320,43 +331,59 @@ void setup() {
 void loop() { 
     
   DateTime now = RTC.now(); 
- 
 
-  int hplus = analogRead(0);
-  int hminus = analogRead(1);
+
+  int hplus = analogRead(1);
+  int hminus = analogRead(0);
   int mplus = analogRead(2);
   int mminus = analogRead(3);
 
+
+
+  
   boolean change = false;
   if((hplus>800)&&(hplusprev==false))
   {
     hours++;
+    seconds = 0;
+    if(hours>23)
+      {hours = 0;}
     hplusprev =true;
-    setHours(true);
+    setHours(false);
     change = true;
   }
 
   if((hminus>800)&&(hminusprev==false))
   {
     hours--;
+    seconds = 0;
+    if(hours<0)
+     {hours = 23;}
     hminusprev=true;
-    setHours(true);
+    setHours(false);
     change = true;
   }
 
   if((mplus>800)&&(mplusprev==false))
   {
     mins++;
+    seconds = 0;
+    if(mins==60)
+    {mins=0;}
     mplusprev =true;
-    setMins(true);
+    setMins(false);
     change = true;
   }
 
   if((mminus>800)&&(mminusprev==false))
   {
     mins--;
+    seconds = 0;
+    if(mins==-1)
+    {mins=59;}
+    
     mminusprev=true;
-    setMins(true);
+    setMins(false);
     change = true;
   }
   
@@ -384,12 +411,12 @@ void loop() {
   if(secondsPrev!=seconds)
   {
     now = RTC.now(); 
-
+    
     mins = now.minute();
     hours = now.hour();
-    setSeconds();
-    setMins();
-    setHours();
+    setSeconds(true);
+    setMins(true);
+    setHours(true);
 
     secondsPrev = seconds;
 
@@ -406,7 +433,7 @@ void loop() {
         digitalWrite(i, LOW);
     }
 
-    delay(100); // check RTC every 100ms, probably responeive enough
+    delay(50); // check RTC every 50ms, probably responeive enough
 
 
 }
