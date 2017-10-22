@@ -36,6 +36,7 @@ int mins = 0 ;
 int seconds =0;
 
 int secondsPrev =0;
+int changeTimer = 0;
 
 boolean hplusprev = false;
 boolean hminusprev = false;
@@ -226,10 +227,10 @@ void setDigit(int digit, int val, boolean diff=true){
      }
   
  }
-      // 220ms to shift big digits, only 130ms for small seconds
+      // 260ms to shift big digits, only 160ms for small seconds
      int d=260;
-     if(digit==D4 || digit == D5)
-      d=130;
+     if(digit == D5)
+      d=150;
     
      digitalWrite(L2, HIGH);
      digitalWrite(digit,HIGH);
@@ -318,10 +319,11 @@ void setup() {
   seconds = 0;
   mins =0;
   hours = now.hour();
-  setHours(true);
+  setHours(false);
   mins = now.minute();
-  setMins(true);
+  setMins(false);
   seconds = now.second();
+  setSeconds(false);
    
 }
 
@@ -390,6 +392,7 @@ void loop() {
   if(change)
   { DateTime newTime = DateTime(2008,12,3,hours,mins,seconds);
     RTC.adjust(newTime);
+    changeTimer= 20;
   }
   
 
@@ -408,18 +411,21 @@ void loop() {
    
    seconds = now.second();
 
-  if(secondsPrev!=seconds)
+  if(changeTimer == 0)
   {
-    now = RTC.now(); 
-    
-    mins = now.minute();
-    hours = now.hour();
-    setSeconds(true);
-    setMins(true);
-    setHours(true);
-
-    secondsPrev = seconds;
-
+    if(secondsPrev!=seconds)
+    {
+      now = RTC.now(); 
+      
+      mins = now.minute();
+      hours = now.hour();
+      setSeconds(true);
+      setMins(true);
+      setHours(true);
+  
+      secondsPrev = seconds;
+  
+    }
   }
 
 
@@ -434,7 +440,10 @@ void loop() {
     }
 
     delay(50); // check RTC every 50ms, probably responeive enough
-
+    
+    changeTimer--;
+    if(changeTimer<1)
+      {changeTimer=0;}
 
 }
 
